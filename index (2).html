@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>청소년 알바 지킴이</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f2fe, #fef3c7);
+      color: #1f2937;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .hero, .card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 26px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+    }
+
+    .hero {
+      border: 3px solid #bae6fd;
+      padding: 30px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 2.1rem;
+      color: #0369a1;
+    }
+
+    .hero p {
+      margin: 0;
+      line-height: 1.6;
+      color: #475569;
+      font-size: 1.05rem;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #0f766e;
+      font-size: 1.35rem;
+    }
+
+    label {
+      font-weight: 800;
+      color: #334155;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      font-size: 1rem;
+      background: #f8fafc;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #38bdf8;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .mini {
+      color: #64748b;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .age-box, .summary-box {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 16px;
+      background: #ecfeff;
+      border: 2px solid #67e8f9;
+      color: #155e75;
+      font-weight: 900;
+      line-height: 1.6;
+    }
+
+    .weekday-tools {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin: 14px 0 16px;
+    }
+
+    .weekday-btn {
+      border: 2px solid #dbeafe;
+      background: #f8fafc;
+      color: #1e3a8a;
+      padding: 12px 6px;
+      border-radius: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .weekday-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .weekday-btn.active {
+      background: #dbeafe;
+      border-color: #2563eb;
+      color: #1d4ed8;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18);
+    }
+
+    .calendar-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .calendar-header select {
+      max-width: 150px;
+    }
+
+    .small-btn {
+      width: auto;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 15px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .small-btn.danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .calendar-weekdays div {
+      text-align: center;
+      font-weight: 900;
+      color: #475569;
+      padding: 8px 0;
+    }
+
+    .calendar-day {
+      min-height: 72px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      background: #f8fafc;
+      cursor: pointer;
+      font-weight: 900;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.16s;
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background: #eff6ff;
+      transform: translateY(-2px);
+    }
+
+    .calendar-day.selected {
+      background: #dbeafe;
+      border-color: #2563eb;
+      color: #1d4ed8;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .calendar-day.today::after {
+      content: "오늘";
+      position: absolute;
+      bottom: 6px;
+      font-size: 0.7rem;
+      color: #0284c7;
+    }
+
+    .calendar-blank {
+      min-height: 72px;
+    }
+
+    .selected-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .date-chip {
+      border: none;
+      background: #dcfce7;
+      color: #166534;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .check-box {
+      background: #f8fafc;
+      border: 2px dashed #93c5fd;
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .check-question {
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .radio-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .radio-row label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 2px solid #dbeafe;
+      border-radius: 999px;
+      padding: 10px 16px;
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+
+    .radio-row input {
+      width: auto;
+    }
+
+    .main-btn {
+      width: 100%;
+      padding: 17px;
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      color: white;
+      font-size: 1.15rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+      transition: 0.2s;
+    }
+
+    .main-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 28px rgba(37, 99, 235, 0.32);
+    }
+
+    .warning {
+      display: none;
+      background: #fff7ed;
+      border: 2px solid #fb923c;
+      color: #9a3412;
+      padding: 15px;
+      border-radius: 16px;
+      margin-top: 14px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .warning.show {
+      display: block;
+    }
+
+    .result {
+      display: none;
+      border: 3px solid #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .salary {
+      font-size: 2rem;
+      color: #15803d;
+      font-weight: 900;
+      margin: 12px 0;
+    }
+
+    .comparison {
+      padding: 18px;
+      border-radius: 18px;
+      margin-top: 16px;
+      font-weight: 900;
+      line-height: 1.7;
+    }
+
+    .comparison.good {
+      background: #dcfce7;
+      border: 2px solid #22c55e;
+      color: #166534;
+    }
+
+    .comparison.bad {
+      background: #fee2e2;
+      border: 2px solid #ef4444;
+      color: #991b1b;
+    }
+
+    .comparison.same {
+      background: #fef9c3;
+      border: 2px solid #eab308;
+      color: #854d0e;
+    }
+
+    .result-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0;
+    }
+
+    .result-list li {
+      background: white;
+      margin-bottom: 10px;
+      padding: 13px 15px;
+      border-radius: 14px;
+      border-left: 6px solid #22c55e;
+      line-height: 1.5;
+    }
+
+    .notice {
+      background: #eff6ff;
+      border: 3px solid #bfdbfe;
+    }
+
+    .notice ul {
+      padding-left: 20px;
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    .notice li {
+      margin-bottom: 10px;
+    }
+
+    .danger-text {
+      color: #dc2626;
+      font-weight: 900;
+    }
+
+    .good-text {
+      color: #15803d;
+      font-weight: 900;
+    }
+
+    @media (max-width: 780px) {
+      body {
+        padding: 14px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .weekday-tools {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .calendar-day,
+      .calendar-blank {
+        min-height: 54px;
+      }
+
+      .hero h1 {
+        font-size: 1.65rem;
+      }
+
+      .salary {
+        font-size: 1.55rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .weekday-tools {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .calendar-weekdays,
+      .calendar-grid {
+        gap: 5px;
+      }
+
+      .calendar-day {
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <section class="hero">
+      <span class="tag">👷 청소년 노동 인권 도우미</span>
+      <h1>청소년 알바 지킴이 💼</h1>
+      <p>
+        달력에서 실제 일하는 날짜를 선택하고, 근무시간과 제안받은 월급을 입력하면
+        최저임금·주휴수당·야간근로수당 기준으로 내가 적정하게 받는지 확인할 수 있어요.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>1. 기본 정보 입력 📝</h2>
+
+      <div class="grid">
+        <div>
+          <label for="shopName">상호명</label>
+          <input type="text" id="shopName" placeholder="예: 행복분식" />
+        </div>
+
+        <div>
+          <label for="birthDate">생년월일</label>
+          <input type="date" id="birthDate" />
+        </div>
+
+        <div>
+          <label for="workerCount">사업장 규모</label>
+          <select id="workerCount">
+            <option value="">선택하세요</option>
+            <option value="over5">상시근로자 5인 이상</option>
+            <option value="under5">상시근로자 5인 미만</option>
+            <option value="unknown">잘 모르겠어요</option>
+          </select>
+          <p class="mini">※ 5인 이상 여부에 따라 야간·연장근로 가산수당 적용이 달라질 수 있어요.</p>
+        </div>
+
+        <div>
+          <label for="offeredSalary">제안받은 월급</label>
+          <input type="number" id="offeredSalary" placeholder="예: 700000" />
+          <p class="mini">※ 숫자만 입력하세요. 예: 700000</p>
+        </div>
+      </div>
+
+      <div id="ageBox" class="age-box">
+        생년월일을 입력하면 만 나이가 자동으로 계산됩니다.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. 실제 일하는 날짜 선택 📅</h2>
+
+      <p class="mini">
+        방법 1: 자주 일하는 요일을 누르면 이번 달 해당 요일이 한 번에 선택됩니다.<br>
+        방법 2: 달력에서 일하는 날짜만 직접 클릭해도 됩니다. 다시 클릭하면 선택 해제됩니다.
+      </p>
+
+      <div class="calendar-header">
+        <select id="calendarYear"></select>
+        <select id="calendarMonth"></select>
+        <button type="button" class="small-btn" onclick="moveMonth(-1)">이전 달</button>
+        <button type="button" class="small-btn" onclick="moveMonth(1)">다음 달</button>
+        <button type="button" class="small-btn danger" onclick="clearSelectedDates()">선택 초기화</button>
+      </div>
+
+      <div class="weekday-tools" id="weekdayTools"></div>
+
+      <div class="calendar-weekdays">
+        <div>일</div>
+        <div>월</div>
+        <div>화</div>
+        <div>수</div>
+        <div>목</div>
+        <div>금</div>
+        <div>토</div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid"></div>
+
+      <div class="summary-box">
+        <div id="selectedSummary">선택한 근무일: 0일</div>
+        <div id="selectedList" class="selected-list"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. 근무 시간 입력 ⏰</h2>
+
+      <div class="grid">
+        <div>
+          <label for="startTime">시작 시간</label>
+          <select id="startTime"></select>
+        </div>
+
+        <div>
+          <label for="endTime">종료 시간</label>
+          <select id="endTime"></select>
+        </div>
+
+        <div>
+          <label for="breakTime">휴게시간</label>
+          <select id="breakTime">
+            <option value="0">0분</option>
+            <option value="0.5">30분</option>
+            <option value="1" selected>1시간</option>
+            <option value="1.5">1시간 30분</option>
+            <option value="2">2시간</option>
+            <option value="3">3시간</option>
+          </select>
+        </div>
+
+        <div>
+          <label>예시</label>
+          <div class="summary-box" style="margin-top:0;">
+            예: 09:00 ~ 18:00, 휴게 1시간<br>
+            실제 근무시간은 8시간으로 계산됩니다.
+          </div>
+        </div>
+      </div>
+
+      <div id="workSummary" class="summary-box">
+        날짜와 시간을 선택하면 이번 달 예상 근무시간이 표시됩니다.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. 급여 계산 전 필수 확인 ✅</h2>
+
+      <div id="checkUnder15" class="check-box" style="display:none;">
+        <div class="check-question">
+          만 15세 미만인가요? 그렇다면 고용노동부에서 발급받은 <strong>취직인허증</strong>이 있나요?
+        </div>
+
+        <div class="radio-row">
+          <label><input type="radio" name="permit" value="yes" /> 네, 있어요</label>
+          <label><input type="radio" name="permit" value="no" /> 아니요, 없어요</label>
+        </div>
+      </div>
+
+      <div id="checkTeen" class="check-box" style="display:none;">
+        <div class="check-question">
+          부모님, 친권자 동의서와 가족관계증명서를 제출하셨나요?
+        </div>
+
+        <div class="radio-row">
+          <label><input type="radio" name="parentDoc" value="yes" /> 네, 제출했어요</label>
+          <label><input type="radio" name="parentDoc" value="no" /> 아니요, 아직이에요</label>
+        </div>
+      </div>
+
+      <div id="adultGuide" class="check-box" style="display:none;">
+        <div class="check-question">만 18세 이상으로 계산됩니다.</div>
+        최저임금, 근로계약서, 휴게시간, 주휴수당은 반드시 확인해야 합니다.
+      </div>
+
+      <div id="ageGuide" class="mini">
+        생년월일을 입력하면 필요한 체크리스트가 자동으로 나타납니다.
+      </div>
+
+      <div id="warningBox" class="warning"></div>
+    </section>
+
+    <section class="card">
+      <button class="main-btn" onclick="calculateSalary()">내 월급 지켜보기 💰</button>
+    </section>
+
+    <section id="resultBox" class="card result">
+      <h2>5. 예상 월급 결과 📊</h2>
+      <div id="resultTitle"></div>
+      <div id="salaryAmount" class="salary"></div>
+      <div id="comparisonBox" class="comparison"></div>
+      <ul id="resultDetails" class="result-list"></ul>
+    </section>
+
+    <section class="card notice">
+      <h2>꼭 기억하세요! 🚨</h2>
+
+      <ul>
+        <li><strong>근로시간 제한:</strong> 만 18세 미만 청소년은 하루 7시간, 일주일 35시간까지만 일할 수 있어요. 합의 시 하루 1시간, 1주 5시간 연장 가능해요.</li>
+        <li><strong>야간근로 금지:</strong> 만 18세 미만 청소년은 밤 10시부터 아침 6시 사이에는 원칙적으로 일할 수 없어요.</li>
+        <li><strong>야간수당:</strong> 상시근로자 5인 이상 사업장에서 22:00~06:00에 일하면 야간근로 가산수당을 확인해야 해요.</li>
+        <li><strong>금지 업종 안내:</strong> 청소년은 PC방, 술을 주로 파는 식당, 유흥주점 등 청소년 고용금지 업소에서는 일할 수 없어요.</li>
+        <li><strong>근로계약서:</strong> 일하기 전 반드시 <strong>근로계약서</strong>를 작성하고 한 부를 직접 챙기세요.</li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    const MINIMUM_WAGE_2026 = 10320;
+
+    const selectedDates = new Set();
+
+    const calendarYear = document.getElementById("calendarYear");
+    const calendarMonth = document.getElementById("calendarMonth");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const weekdayTools = document.getElementById("weekdayTools");
+
+    const birthDateInput = document.getElementById("birthDate");
+    const startTimeInput = document.getElementById("startTime");
+    const endTimeInput = document.getElementById("endTime");
+    const breakTimeInput = document.getElementById("breakTime");
+
+    const ageBox = document.getElementById("ageBox");
+    const workSummary = document.getElementById("workSummary");
+
+    const checkUnder15 = document.getElementById("checkUnder15");
+    const checkTeen = document.getElementById("checkTeen");
+    const adultGuide = document.getElementById("adultGuide");
+    const ageGuide = document.getElementById("ageGuide");
+
+    const warningBox = document.getElementById("warningBox");
+    const resultBox = document.getElementById("resultBox");
+    const comparisonBox = document.getElementById("comparisonBox");
+
+    const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
+
+    function pad(num) {
+      return String(num).padStart(2, "0");
+    }
+
+    function makeDateKey(year, monthIndex, day) {
+      return `${year}-${pad(monthIndex + 1)}-${pad(day)}`;
+    }
+
+    function parseDateKey(key) {
+      return new Date(`${key}T00:00:00`);
+    }
+
+    function formatDateKorean(key) {
+      const date = parseDateKey(key);
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const week = weekdayNames[date.getDay()];
+      return `${month}/${day}(${week})`;
+    }
+
+    function formatWon(value) {
+      return Math.round(value).toLocaleString("ko-KR") + "원";
+    }
+
+    function makeTimeOptions() {
+      let options = "";
+
+      for (let h = 0; h < 24; h++) {
+        for (let m of [0, 30]) {
+          const hour = pad(h);
+          const minute = pad(m);
+          const value = h + m / 60;
+          options += `<option value="${value}">${hour}:${minute}</option>`;
+        }
+      }
+
+      return options;
+    }
+
+    function initTimeSelects() {
+      const options = makeTimeOptions();
+      startTimeInput.innerHTML = options;
+      endTimeInput.innerHTML = options;
+
+      startTimeInput.value = "9";
+      endTimeInput.value = "18";
+    }
+
+    function initCalendarSelects() {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const defaultYear = currentYear === 2026 ? currentYear : 2026;
+      const defaultMonth = currentYear === 2026 ? today.getMonth() : 0;
+
+      for (let year = 2026; year <= 2027; year++) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = `${year}년`;
+        calendarYear.appendChild(option);
+      }
+
+      for (let month = 0; month < 12; month++) {
+        const option = document.createElement("option");
+        option.value = month;
+        option.textContent = `${month + 1}월`;
+        calendarMonth.appendChild(option);
+      }
+
+      calendarYear.value = defaultYear;
+      calendarMonth.value = defaultMonth;
+    }
+
+    function renderWeekdayTools() {
+      const tools = [
+        { dow: 1, label: "월 전체" },
+        { dow: 2, label: "화 전체" },
+        { dow: 3, label: "수 전체" },
+        { dow: 4, label: "목 전체" },
+        { dow: 5, label: "금 전체" },
+        { dow: 6, label: "토 전체" },
+        { dow: 0, label: "일 전체" }
+      ];
+
+      weekdayTools.innerHTML = tools.map(item => `
+        <button type="button" class="weekday-btn" data-dow="${item.dow}" onclick="toggleWeekday(${item.dow})">
+          ${item.label}
+        </button>
+      `).join("");
+
+      updateWeekdayButtonState();
+    }
+
+    function getDatesForWeekdayInCurrentMonth(dow) {
+      const year = Number(calendarYear.value);
+      const monthIndex = Number(calendarMonth.value);
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+      const dates = [];
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const key = makeDateKey(year, monthIndex, day);
+        const date = parseDateKey(key);
+
+        if (date.getDay() === dow) {
+          dates.push(key);
+        }
+      }
+
+      return dates;
+    }
+
+    function toggleWeekday(dow) {
+      const dates = getDatesForWeekdayInCurrentMonth(dow);
+      const allSelected = dates.length > 0 && dates.every(key => selectedDates.has(key));
+
+      dates.forEach(key => {
+        if (allSelected) {
+          selectedDates.delete(key);
+        } else {
+          selectedDates.add(key);
+        }
+      });
+
+      updateAllUI();
+    }
+
+    function updateWeekdayButtonState() {
+      const buttons = document.querySelectorAll(".weekday-btn");
+
+      buttons.forEach(button => {
+        const dow = Number(button.dataset.dow);
+        const dates = getDatesForWeekdayInCurrentMonth(dow);
+        const allSelected = dates.length > 0 && dates.every(key => selectedDates.has(key));
+
+        button.classList.toggle("active", allSelected);
+      });
+    }
+
+    function renderCalendar() {
+      const year = Number(calendarYear.value);
+      const monthIndex = Number(calendarMonth.value);
+
+      const firstDay = new Date(year, monthIndex, 1).getDay();
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+      const today = new Date();
+      const todayKey = makeDateKey(today.getFullYear(), today.getMonth(), today.getDate());
+
+      let html = "";
+
+      for (let i = 0; i < firstDay; i++) {
+        html += `<div class="calendar-blank"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const key = makeDateKey(year, monthIndex, day);
+        const selectedClass = selectedDates.has(key) ? "selected" : "";
+        const todayClass = key === todayKey ? "today" : "";
+
+        html += `
+          <button type="button" class="calendar-day ${selectedClass} ${todayClass}" onclick="toggleDate('${key}')">
+            ${day}
+          </button>
+        `;
+      }
+
+      calendarGrid.innerHTML = html;
+      updateWeekdayButtonState();
+    }
+
+    function toggleDate(key) {
+      if (selectedDates.has(key)) {
+        selectedDates.delete(key);
+      } else {
+        selectedDates.add(key);
+      }
+
+      updateAllUI();
+    }
+
+    function clearSelectedDates() {
+      selectedDates.clear();
+      updateAllUI();
+    }
+
+    function moveMonth(direction) {
+      let year = Number(calendarYear.value);
+      let month = Number(calendarMonth.value);
+
+      month += direction;
+
+      if (month < 0) {
+        month = 11;
+        year--;
+      }
+
+      if (month > 11) {
+        month = 0;
+        year++;
+      }
+
+      if (year < 2026) year = 2026;
+      if (year > 2027) year = 2027;
+
+      calendarYear.value = year;
+      calendarMonth.value = month;
+
+      updateAllUI();
+    }
+
+    function getSelectedDatesSorted() {
+      return Array.from(selectedDates).sort();
+    }
+
+    function updateSelectedDatesUI() {
+      const list = getSelectedDatesSorted();
+
+      document.getElementById("selectedSummary").innerHTML =
+        `선택한 근무일: <strong>${list.length}일</strong>`;
+
+      const selectedList = document.getElementById("selectedList");
+
+      if (list.length === 0) {
+        selectedList.innerHTML = "";
+        return;
+      }
+
+      selectedList.innerHTML = list.map(key => `
+        <button type="button" class="date-chip" onclick="toggleDate('${key}')">
+          ${formatDateKorean(key)} ✕
+        </button>
+      `).join("");
+    }
+
+    function calculateAge(birthDateString) {
+      if (!birthDateString) return null;
+
+      const today = new Date();
+      const birthDate = new Date(`${birthDateString}T00:00:00`);
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      const dayDiff = today.getDate() - birthDate.getDate();
+
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+
+      return age;
+    }
+
+    function updateAgeGuide() {
+      const age = calculateAge(birthDateInput.value);
+
+      if (age === null || isNaN(age)) {
+        ageBox.innerHTML = "생년월일을 입력하면 만 나이가 자동으로 계산됩니다.";
+        return;
+      }
+
+      ageBox.innerHTML = `현재 기준 만 나이: <strong>${age}세</strong>`;
+    }
+
+    function updateChecklist() {
+      const age = calculateAge(birthDateInput.value);
+
+      checkUnder15.style.display = "none";
+      checkTeen.style.display = "none";
+      adultGuide.style.display = "none";
+      ageGuide.style.display = "block";
+      hideWarning();
+
+      if (age === null || isNaN(age)) return;
+
+      ageGuide.style.display = "none";
+
+      if (age < 15) {
+        checkUnder15.style.display = "block";
+      } else if (age >= 15 && age < 18) {
+        checkTeen.style.display = "block";
+      } else {
+        adultGuide.style.display = "block";
+      }
+    }
+
+    function getRawHours() {
+      const start = Number(startTimeInput.value);
+      let end = Number(endTimeInput.value);
+
+      if (end <= start) {
+        end += 24;
+      }
+
+      return end - start;
+    }
+
+    function getDailyWorkHours() {
+      const rawHours = getRawHours();
+      const breakHours = Number(breakTimeInput.value);
+      return Math.max(0, rawHours - breakHours);
+    }
+
+    function overlap(startA, endA, startB, endB) {
+      return Math.max(0, Math.min(endA, endB) - Math.max(startA, startB));
+    }
+
+    function getDailyNightHours() {
+      const start = Number(startTimeInput.value);
+      let end = Number(endTimeInput.value);
+      const breakHours = Number(breakTimeInput.value);
+
+      if (end <= start) {
+        end += 24;
+      }
+
+      const rawHours = end - start;
+
+      if (rawHours <= 0) return 0;
+
+      let nightGrossHours = 0;
+
+      const nightRanges = [
+        [0, 6],
+        [22, 30]
+      ];
+
+      nightRanges.forEach(range => {
+        nightGrossHours += overlap(start, end, range[0], range[1]);
+      });
+
+      const paidHours = Math.max(0, rawHours - breakHours);
+      if (paidHours === 0) return 0;
+
+      const ratio = paidHours / rawHours;
+      return nightGrossHours * ratio;
+    }
+
+    function getWeekStartKey(dateKey) {
+      const date = parseDateKey(dateKey);
+      const day = date.getDay();
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+
+      const monday = new Date(date);
+      monday.setDate(date.getDate() + diffToMonday);
+
+      return `${monday.getFullYear()}-${pad(monday.getMonth() + 1)}-${pad(monday.getDate())}`;
+    }
+
+    function buildWeeklyGroups() {
+      const dailyWorkHours = getDailyWorkHours();
+      const dailyNightHours = getDailyNightHours();
+      const groups = {};
+
+      getSelectedDatesSorted().forEach(key => {
+        const weekKey = getWeekStartKey(key);
+
+        if (!groups[weekKey]) {
+          groups[weekKey] = {
+            dates: [],
+            hours: 0,
+            nightHours: 0
+          };
+        }
+
+        groups[weekKey].dates.push(key);
+        groups[weekKey].hours += dailyWorkHours;
+        groups[weekKey].nightHours += dailyNightHours;
+      });
+
+      return groups;
+    }
+
+    function getWeekOvertimeHours(age, weekHours, workDaysInWeek) {
+      const dailyWorkHours = getDailyWorkHours();
+
+      let dailyLimit = 8;
+      let weeklyLimit = 40;
+
+      if (age < 18) {
+        dailyLimit = 7;
+        weeklyLimit = 35;
+      }
+
+      const dailyOvertime = Math.max(0, dailyWorkHours - dailyLimit) * workDaysInWeek;
+      const weeklyOvertime = Math.max(0, weekHours - weeklyLimit);
+
+      return Math.max(dailyOvertime, weeklyOvertime);
+    }
+
+    function updateWorkSummary() {
+      const selectedCount = selectedDates.size;
+      const dailyWorkHours = getDailyWorkHours();
+      const dailyNightHours = getDailyNightHours();
+      const breakHours = Number(breakTimeInput.value);
+
+      if (selectedCount === 0) {
+        workSummary.innerHTML = "날짜와 시간을 선택하면 이번 달 예상 근무시간이 표시됩니다.";
+        return;
+      }
+
+      const totalHours = selectedCount * dailyWorkHours;
+      const totalNightHours = selectedCount * dailyNightHours;
+
+      workSummary.innerHTML = `
+        선택한 근무일: <strong>${selectedCount}일</strong><br>
+        하루 전체 체류시간: <strong>${getRawHours().toFixed(1)}시간</strong><br>
+        휴게시간: <strong>${breakHours.toFixed(1)}시간</strong><br>
+        하루 실제 근무시간: <strong>${dailyWorkHours.toFixed(1)}시간</strong><br>
+        이번 달 실제 근무시간: <strong>${totalHours.toFixed(1)}시간</strong><br>
+        이번 달 야간근로 예상시간: <strong>${totalNightHours.toFixed(1)}시간</strong>
+      `;
+    }
+
+    function showWarning(message) {
+      warningBox.innerHTML = message;
+      warningBox.classList.add("show");
+    }
+
+    function hideWarning() {
+      warningBox.innerHTML = "";
+      warningBox.classList.remove("show");
+    }
+
+    function getRadioValue(name) {
+      const selected = document.querySelector(`input[name="${name}"]:checked`);
+      return selected ? selected.value : "";
+    }
+
+    function calculateSalary() {
+      hideWarning();
+
+      const shopName = document.getElementById("shopName").value.trim();
+      const birthDate = birthDateInput.value;
+      const age = calculateAge(birthDate);
+      const workerCount = document.getElementById("workerCount").value;
+      const offeredSalary = Number(document.getElementById("offeredSalary").value);
+
+      const selectedCount = selectedDates.size;
+      const rawHours = getRawHours();
+      const breakHours = Number(breakTimeInput.value);
+      const dailyWorkHours = getDailyWorkHours();
+      const dailyNightHours = getDailyNightHours();
+
+      if (!shopName) {
+        showWarning("⚠️ 상호명을 입력해 주세요.");
+        resultBox.classList.remove("show");
+        return;
+      }
+
+      if (!birthDate || age === null || isNaN(age)) {
+        showWarning("⚠️ 생년월일을 입력해 주세요.");
+        resultBox.classList.remove("show");
+        return;
+      }
+
+      if (!workerCount) {
+        showWarning("⚠️ 사업장 규모를 선택해 주세요.");
+        resultBox.classList.remove("show");
+        return;
+      }
+
+      if (selectedCount === 0) {
+        showWarning("⚠️ 달력에서 일하는 날짜를 하나 이상 선택해 주세요.");
+        resultBox.classList.remove("show");
+        return;
+      }
+
+      if (rawHours <= 0 || dailyWorkHours <= 0) {
+        showWarning("⚠️ 시작 시간, 종료 시간, 휴게시간을 다시 확인해 주세요.");
+        resultBox.classList.remove("show");
+        return;
+      }
+
+      if (!offeredSalary || offeredSalary < 0) {
+        showWarning("⚠️ 제안받은 월급을 숫자로 입력해 주세요.");
+        resultBox.classList.remove("show");
+        return;
+      }
+
+      if (age < 15) {
+        const permit = getRadioValue("permit");
+
+        if (!permit) {
+          showWarning("⚠️ 취직인허증 여부를 선택해 주세요.");
+          resultBox.classList.remove("show");
+          return;
+        }
+
+        if (permit === "no") {
+          showWarning("🚫 만 15세 미만은 원칙적으로 일할 수 없으며, 일을 하려면 고용노동부에서 발급받은 <strong>취직인허증</strong>이 필요해요.");
+          resultBox.classList.remove("show");
+          return;
+        }
+      }
+
+      if (age >= 15 && age < 18) {
+        const parentDoc = getRadioValue("parentDoc");
+
+        if (!parentDoc) {
+          showWarning("⚠️ 부모님 동의서와 가족관계증명서 제출 여부를 선택해 주세요.");
+          resultBox.classList.remove("show");
+          return;
+        }
+      }
+
+      const weeklyGroups = buildWeeklyGroups();
+
+      let basePay = 0;
+      let holidayPay = 0;
+      let holidayHours = 0;
+      let totalWorkHours = 0;
+      let totalNightHours = 0;
+      let overtimeHours = 0;
+      let weeksOver15 = 0;
+
+      Object.values(weeklyGroups).forEach(group => {
+        basePay += group.hours * MINIMUM_WAGE_2026;
+        totalWorkHours += group.hours;
+        totalNightHours += group.nightHours;
+
+        if (group.hours >= 15) {
+          weeksOver15++;
+          const thisWeekHolidayHours = Math.min(8, group.hours / 5);
+          holidayHours += thisWeekHolidayHours;
+          holidayPay += thisWeekHolidayHours * MINIMUM_WAGE_2026;
+        }
+
+        overtimeHours += getWeekOvertimeHours(age, group.hours, group.dates.length);
+      });
+
+      let nightPremium = 0;
+      let overtimePremium = 0;
+      let premiumNote = "";
+
+      if (workerCount === "over5") {
+        nightPremium = totalNightHours * MINIMUM_WAGE_2026 * 0.5;
+        overtimePremium = overtimeHours * MINIMUM_WAGE_2026 * 0.5;
+        premiumNote = "상시근로자 5인 이상 기준으로 야간·연장근로 가산수당을 포함했습니다.";
+      } else if (workerCount === "unknown") {
+        nightPremium = totalNightHours * MINIMUM_WAGE_2026 * 0.5;
+        overtimePremium = overtimeHours * MINIMUM_WAGE_2026 * 0.5;
+        premiumNote = "사업장 규모를 모르는 경우라서, 5인 이상 사업장일 수 있다는 기준으로 가산수당을 포함해 계산했습니다. 실제 적용 여부는 확인이 필요합니다.";
+      } else {
+        premiumNote = "상시근로자 5인 미만으로 선택되어 야간·연장근로 가산수당은 자동 포함하지 않았습니다. 단, 근로계약서에 약속되어 있다면 받을 수 있습니다.";
+      }
+
+      const estimatedPay = basePay + holidayPay + nightPremium + overtimePremium;
+      const difference = offeredSalary - estimatedPay;
+
+      document.getElementById("resultTitle").innerHTML = `
+        <p>
+          <strong>${shopName}</strong>에서 선택한 날짜만큼 일할 경우,
+          2026년 최저임금 기준으로 받아야 할 예상 월급입니다.
+        </p>
+      `;
+
+      document.getElementById("salaryAmount").textContent = formatWon(estimatedPay);
+
+      comparisonBox.className = "comparison";
+
+      if (difference > 1000) {
+        comparisonBox.classList.add("good");
+        comparisonBox.innerHTML = `
+          😊 <strong>제안받은 월급이 계산 기준보다 높아요.</strong><br>
+          제안받은 월급: ${formatWon(offeredSalary)}<br>
+          차이: 약 ${formatWon(difference)} 더 많아요.<br>
+          그래도 근로계약서에 근무일, 근무시간, 휴게시간, 주휴수당, 야간수당 여부가 정확히 적혀 있는지 확인하세요.
+        `;
+      } else if (difference < -1000) {
+        comparisonBox.classList.add("bad");
+        comparisonBox.innerHTML = `
+          🚨 <strong>제안받은 월급이 계산 기준보다 부족할 수 있어요.</strong><br>
+          제안받은 월급: ${formatWon(offeredSalary)}<br>
+          부족한 금액: 약 ${formatWon(Math.abs(difference))}<br><br>
+          <strong>이렇게 해보세요.</strong><br>
+          1. “제가 계산해 보니 최저임금과 수당 기준보다 적은 것 같은데 확인해 주실 수 있을까요?”라고 정중하게 물어보세요.<br>
+          2. 근로계약서에 근무일, 시급, 휴게시간, 주휴수당, 야간수당 포함 여부가 적혀 있는지 확인하세요.<br>
+          3. 혼자 해결하기 어렵다면 부모님, 선생님, 청소년근로권익센터, 고용노동부 상담 창구에 도움을 요청하세요.
+        `;
+      } else {
+        comparisonBox.classList.add("same");
+        comparisonBox.innerHTML = `
+          🙂 <strong>제안받은 월급이 계산 기준과 거의 비슷해요.</strong><br>
+          제안받은 월급: ${formatWon(offeredSalary)}<br>
+          다만 주휴수당, 휴게시간, 야간수당 포함 여부를 계약서에서 꼭 확인하세요.
+        `;
+      }
+
+      let warningItems = "";
+
+      if (rawHours >= 8 && breakHours < 1) {
+        warningItems += `
+          <li>
+            <span class="danger-text">⚠️ 휴게시간 확인:</span>
+            근무시간이 8시간 이상이면 보통 1시간 이상의 휴게시간이 필요해요.
+          </li>
+        `;
+      } else if (rawHours >= 4 && breakHours < 0.5) {
+        warningItems += `
+          <li>
+            <span class="danger-text">⚠️ 휴게시간 확인:</span>
+            근무시간이 4시간 이상이면 보통 30분 이상의 휴게시간이 필요해요.
+          </li>
+        `;
+      }
+
+      if (age < 18 && dailyNightHours > 0) {
+        warningItems += `
+          <li>
+            <span class="danger-text">🌙 야간근로 주의:</span>
+            만 18세 미만 청소년은 22:00~06:00 근무가 원칙적으로 금지됩니다.
+            예외가 필요한 경우 본인 동의와 관할 지방고용노동관서 인가가 필요할 수 있어요.
+          </li>
+        `;
+      }
+
+      if (age < 18) {
+        if (dailyWorkHours > 8 || totalWorkHours > selectedCount * 8) {
+          warningItems += `
+            <li>
+              <span class="danger-text">🚫 근로시간 위험:</span>
+              청소년 연장근로 가능 범위를 넘을 수 있어요.
+              하루 최대 8시간을 넘기지 않도록 확인하세요.
+            </li>
+          `;
+        } else if (dailyWorkHours > 7) {
+          warningItems += `
+            <li>
+              <span class="danger-text">⚠️ 연장근로 확인:</span>
+              만 18세 미만 청소년의 기본 근로시간은 하루 7시간입니다.
+              하루 7시간을 넘는 경우 합의가 필요한 연장근로일 수 있어요.
+            </li>
+          `;
+        }
+      }
+
+      if (age >= 15 && age < 18 && getRadioValue("parentDoc") === "no") {
+        warningItems += `
+          <li>
+            <span class="danger-text">⚠️ 서류 확인:</span>
+            부모님 또는 친권자 동의서와 가족관계증명서를 준비해야 해요.
+          </li>
+        `;
+      }
+
+      if (workerCount === "unknown") {
+        warningItems += `
+          <li>
+            <span class="danger-text">❓ 사업장 규모 확인 필요:</span>
+            야간·연장근로 가산수당은 사업장 규모에 따라 달라질 수 있어요.
+            사장님이나 담당자에게 상시근로자 5인 이상 사업장인지 확인해 보세요.
+          </li>
+        `;
+      }
+
+      document.getElementById("resultDetails").innerHTML = `
+        <li>현재 기준 만 나이: <strong>${age}세</strong></li>
+        <li>2026년 최저시급 기준: <strong>${MINIMUM_WAGE_2026.toLocaleString("ko-KR")}원</strong></li>
+        <li>선택한 근무일 수: <strong>${selectedCount}일</strong></li>
+        <li>선택한 근무일: <strong>${getSelectedDatesSorted().map(formatDateKorean).join(", ")}</strong></li>
+        <li>하루 전체 체류시간: <strong>${rawHours.toFixed(1)}시간</strong></li>
+        <li>휴게시간: <strong>${breakHours.toFixed(1)}시간</strong></li>
+        <li>하루 실제 근무시간: <strong>${dailyWorkHours.toFixed(1)}시간</strong></li>
+        <li>선택한 날짜 전체 실제 근무시간: <strong>${totalWorkHours.toFixed(1)}시간</strong></li>
+        <li>선택한 날짜 전체 야간근로 예상시간: <strong>${totalNightHours.toFixed(1)}시간</strong></li>
+        <li>기본급 예상액: <strong>${formatWon(basePay)}</strong></li>
+        <li>
+          주휴수당:
+          ${
+            holidayPay > 0
+              ? `<strong class="good-text">포함됨</strong> — 1주 15시간 이상인 주 ${weeksOver15}개 / 주휴시간 약 ${holidayHours.toFixed(1)}시간 / 예상액 ${formatWon(holidayPay)}`
+              : `<strong>미포함</strong> — 선택한 날짜 기준으로 1주 15시간 이상인 주가 없음`
+          }
+        </li>
+        <li>야간근로 가산수당 예상액: <strong>${formatWon(nightPremium)}</strong></li>
+        <li>연장근로 가산수당 예상액: <strong>${formatWon(overtimePremium)}</strong></li>
+        <li>${premiumNote}</li>
+        ${warningItems}
+        <li>※ 이 계산은 선택한 날짜 기준의 간이 계산입니다. 월 경계에 걸친 주휴수당, 실제 휴게시간 위치, 결근·지각·세금·계약 조건에 따라 실제 금액은 달라질 수 있어요.</li>
+      `;
+
+      resultBox.classList.add("show");
+      resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function updateAllUI() {
+      renderCalendar();
+      updateSelectedDatesUI();
+      updateWorkSummary();
+    }
+
+    birthDateInput.addEventListener("change", function () {
+      updateAgeGuide();
+      updateChecklist();
+    });
+
+    calendarYear.addEventListener("change", updateAllUI);
+    calendarMonth.addEventListener("change", updateAllUI);
+
+    startTimeInput.addEventListener("change", updateWorkSummary);
+    endTimeInput.addEventListener("change", updateWorkSummary);
+    breakTimeInput.addEventListener("change", updateWorkSummary);
+
+    initTimeSelects();
+    initCalendarSelects();
+    renderWeekdayTools();
+    updateAgeGuide();
+    updateChecklist();
+    updateAllUI();
+  </script>
+</body>
+</html>
